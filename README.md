@@ -1,5 +1,7 @@
 # Antares LoRaWAN
 
+<img src="http://i68.tinypic.com/2uptonn.jpg" width="300">  
+
 This is a library which consists of high-level API for connecting your LoRa device to Antares IoT Platform LoRaWAN Gateway.  
 
 This library has been tested on these boards:
