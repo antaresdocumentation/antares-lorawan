@@ -2,15 +2,34 @@
 
 <img src="http://i68.tinypic.com/2uptonn.jpg" width="300">  
 
-This is a library which consists of high-level API for connecting your LoRa device to Antares IoT Platform LoRaWAN Gateway.  
+This is a library which consists of high-level API for connecting your LoRa device to Antares IoT Platform LoRaWAN Gateway.   
 
-This library has been tested on these boards:
+This library works under the **Arduino** platform and has been tested on these boards:
 
 * ESP8266
 
 and these LoRa modems:
 
 * RFM95
+
+# Pin Connections
+
+These are the pin connections which needs to be provided in order to make this library work.
+
+| Modem | Device |
+|-------|--------|
+| SCK   | SCK    |
+| MISO  | MISO   |
+| MOSI  | MOSI   |
+| NSS   | (Custom GPIO Pin) |
+| DIO0  | (Custom GPIO Pin) |
+| DIO1  | (Custom GPIO Pin) |
+
+The pin configuration can be changed with the following method of class `AntaresLoRaWAN` :
+```
+setPins(int nssPin, int dio0Pin, int dio1Pin);
+```
+The class needs to be insantiated first before using the method. Please refer to the example for the pin connections.
 
 # Installation
 
