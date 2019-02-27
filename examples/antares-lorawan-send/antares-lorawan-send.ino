@@ -2,7 +2,15 @@
     This is an example to send a "Hello world!" message
     to your Antares IoT Platform's LoRa device.
 
-    The gateway uses AS923 frequency (Around 923MHz).
+    The gateway uses AS923 frequency (Around 920-923MHz).
+
+    sendPacket() is main function to send your data whenever your device is ready.
+    Use antares.send(data) to send your data to Antares LoRaWAN Gateway.
+    antares.send(data) accepts the datatype of
+    - Arduino String
+    - int
+    - float
+    - double
 
     For more information about the platform itself, please
     visit https://antares.id/id/index.html
@@ -17,10 +25,10 @@ AntaresLoRaWAN antares;
 
 int counter = 0;
 
-String sendPacket() {
+void sendPacket() {
   String packet = "Hello world! " + String(counter);
   counter++;
-  return packet;
+  antares.send(packet);
 }
 
 void setup() {
@@ -31,7 +39,11 @@ void setup() {
   antares.setTxInterval(5);    // Set the amount of interval time (in seconds) to transmit
 
   antares.init(ACCESSKEY, DEVICEID);
-  antares.setDataRateTxPow(DR_SF7, 20);   // Set data rate and uplink TX power
+
+  // Set data rate and uplink TX power
+  // Available data rate is DR_SF7 up to DR_SF12
+  // Available power is 5dBm up to 20dBm
+  antares.setDataRateTxPow(DR_SF7, 20);
 }
 
 void loop() {

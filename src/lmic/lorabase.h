@@ -125,8 +125,8 @@ enum { US915_125kHz_UPFBASE = 915200000,   //(Zaki) base is 915.2, so if want to
 };
 enum { US915_FREQ_MIN = 919800000,         //our GW freq starts here, so follow GW
        US915_FREQ_MAX = 928000000 };       //to cater up to the approved Downlink channel
-       
-       //923300000; 923900000; 924500000; 925100000; 925700000; 926300000; 926900000, 0,927500000 
+
+       //923300000; 923900000; 924500000; 925100000; 925700000; 926300000; 926900000, 0,927500000
        //Above are the standard Downlink channel as per Lorawan 915MHz. Notice the spacing is 600Khz.
 
 enum { CHNL_PING         = 0 }; // used only for default init of state (follows beacon - rotating)
@@ -166,14 +166,14 @@ enum { DR_PAGE = DR_PAGE_AS923 };
 //                 freq             band     datarates
 //based on TTN arrangement
 enum { AS923_F1 = 923200000,      // g1   SF7-12
-       AS923_F2 = 923400000,      // g1   SF7-12 
+       AS923_F2 = 923400000,      // g1   SF7-12
        AS923_F3 = 922200000,      // g1   SF7-12
        AS923_F4 = 922400000,      // g2   SF7-12
        AS923_F5 = 922600000,      // g2   SF7-12
        AS923_F6 = 922800000,      // g3   SF7-12
-       AS923_J4 = 923000000,      // g2   SF7-12  
-       AS923_J5 = 922000000,      // g2   SF7-12   
-       AS923_J6 = 922100000,      // g2   SF7      
+       AS923_J4 = 923000000,      // g2   SF7-12
+       AS923_J5 = 922000000,      // g2   SF7-12
+       AS923_J6 = 922100000,      // g2   SF7
 };
 enum { AS923_FREQ_MIN = 921000000,
        AS923_FREQ_MAX = 924000000 };

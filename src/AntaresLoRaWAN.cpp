@@ -3,20 +3,21 @@
 #include <lmic.h>
 #include <hal/hal.h>
 #include <SPI.h>
+#include <RH_RF95.h>
 
 lmic_pinmap lmic_pins;
 
 void do_send(osjob_t* j){
     // Check if there is not a current TX/RX job running
-    String mydata = sendPacket();
+    sendPacket();
+    String mydata = dataToSend;
 
     char dataBuf[50];
     int dataLen = mydata.length();
 
     mydata.toCharArray(dataBuf, dataLen + 1);
 
-    Serial.println(mydata);
-    Serial.println(dataBuf);
+    Serial.println("\n[ANTARES] Data: " + mydata + "\n");
 
     if (LMIC.opmode & OP_TXRXPEND) {
         Serial.println(F("OP_TXRXPEND, not sending"));
@@ -70,6 +71,26 @@ void onEvent (ev_t ev) {
             }
             // Schedule next transmission
             os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
+
+            // Check for sleep mode
+            if(sleepStatus == true) {
+                #if defined(ESP8266)
+                    Serial.println(F("[ANTARES] ESP8266 detected!"));
+                    Serial.println(F("[ANTARES] Going into sleep mode..."));
+                    ESP.deepSleep(sleepInterval * 1000000);
+                    Serial.println(F("[ANTARES] Wake up!"));
+                #elif defined(ESP32)
+                    Serial.println(F("[ANTARES] ESP32 detected!"));
+                    Serial.println(F("[ANTARES] Going into sleep mode..."));
+                #elif defined(ARDUINO_ARCH_STM32)
+                    Serial.println(F("[ANTARES] STM32 detected!"));
+                    Serial.println(F("[ANTARES] Going into sleep mode..."));
+                #endif
+            }
+            else {
+                Serial.println(F("[ANTARES] Sleep not set. ongoing program..."));
+            }
+
             break;
         case EV_LOST_TSYNC:
             Serial.println(F("EV_LOST_TSYNC"));
@@ -94,38 +115,6 @@ void onEvent (ev_t ev) {
 }
 
 AntaresLoRaWAN::AntaresLoRaWAN() {
-    // for(int i = 0; i < 16; i+=2) {
-    //     unsigned long hexNwks;
-    //     String nwks = (String)ACCESSKEY[i] + (String)ACCESSKEY[i+1];
-    //     // Serial.println(nwks);
-    //     char buf[nwks.length() + 1];
-    //     nwks.toCharArray(buf, nwks.length() + 1);
-    //     hexNwks = strtoul(buf, NULL, 16);
-    //     // Serial.println(hexCode, HEX);
-    //
-    //     NWKSKEY[i/2] = (u1_t)hexNwks;
-    //     // Serial.println(NWKSKEY[i/2], HEX);
-    // }
-    //
-    // for(int j = 17; j < 33; j+=2) {
-    //     unsigned long hexApps;
-    //     String apps = (String)ACCESSKEY[j] + (String)ACCESSKEY[j+1];
-    //     // Serial.println(apps);
-    //     char buf[apps.length() + 1];
-    //     apps.toCharArray(buf, apps.length() + 1);
-    //     hexApps = strtoul(buf, NULL, 16);
-    //     // Serial.println(hexCode, HEX);
-    //
-    //     APPSKEY[j/2] = (u1_t)hexApps;
-    //     // Serial.println(APPSKEY[j/2], HEX);
-    // }
-    //
-    // unsigned long hexAddr;
-    // char bufAddr[DEVICEID.length() + 1];
-    // DEVICEID.toCharArray(bufAddr, DEVICEID.length() + 1);
-    // hexAddr = strtoul(bufAddr, NULL, 16);
-    //
-    // DEVADDR = (u4_t)hexAddr;
 }
 
 void AntaresLoRaWAN::setTxInterval(unsigned int intervalTime) {
@@ -134,6 +123,9 @@ void AntaresLoRaWAN::setTxInterval(unsigned int intervalTime) {
 
 void AntaresLoRaWAN::setDataRateTxPow(dr_t dr, s1_t txpow) {
     LMIC_setDrTxpow(dr, txpow);
+    RH_RF95 rf95(_nssPin, _dio0Pin);
+
+    rf95.setTxPower(txpow, false); // Set power to 20 dBm, using PA_BOOST (false). Set to true for RFO pin.
 }
 
 void AntaresLoRaWAN::init(String ACCESSKEY, String DEVICEID) {
@@ -143,8 +135,8 @@ void AntaresLoRaWAN::init(String ACCESSKEY, String DEVICEID) {
     // LoRaWAN AppSKey, application session key
     // This is the default Semtech key, which is used by the early prototype TTN
     // network.
-    // static u1_t APPSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00   };
-    static u1_t APPSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x2C, 0x7B, 0x14, 0xB8, 0x49, 0xC0, 0x84 };
+    // static u1_t APPSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x2C, 0x7B, 0x14, 0xB8, 0x49, 0xC0, 0x84 };
+    static u1_t APPSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00   };
 
     // LoRaWAN end-device address (DevAddr)
     static u4_t DEVADDR = 0x0 ; // <-- Change this address for every node!
@@ -187,6 +179,7 @@ void AntaresLoRaWAN::init(String ACCESSKEY, String DEVICEID) {
     DEVADDR = (u4_t)hexAddr;
 
     // Print the Network key, Apps key, and Device Address
+    Serial.print(F("[ANTARES] Network Key: "));
     for(int i = 0; i < 15; i++) {
         if(NWKSKEY[i] == 0) {
             Serial.print("00");
@@ -197,6 +190,7 @@ void AntaresLoRaWAN::init(String ACCESSKEY, String DEVICEID) {
     }
     Serial.println();
 
+    Serial.print(F("[ANTARES] Apps Key: "));
     for(int i = 0; i < 15; i++) {
         if(APPSKEY[i] == 0) {
             Serial.print("00");
@@ -206,6 +200,8 @@ void AntaresLoRaWAN::init(String ACCESSKEY, String DEVICEID) {
         }
     }
     Serial.println();
+
+    Serial.print(F("[ANTARES] Device Address: "));
     Serial.println(DEVADDR, HEX);
 
     #ifdef VCC_ENABLE
@@ -282,6 +278,37 @@ lmic_pinmap AntaresLoRaWAN::setPins(int nss, int dio0, int dio1) {
       .rst = LMIC_UNUSED_PIN,
       .dio = {dio0, dio1, LMIC_UNUSED_PIN},
     };
+
+    _nssPin = nss;
+    _dio0Pin = dio0;
+    _dio1Pin = dio1;
+}
+
+// Send unformatted data
+void AntaresLoRaWAN::send(String packet) {
+    dataToSend = packet;
+}
+
+void AntaresLoRaWAN::send(int packet) {
+    dataToSend = String(packet);
+}
+
+void AntaresLoRaWAN::send(float packet) {
+    dataToSend = String(packet);
+}
+
+void AntaresLoRaWAN::send(double packet) {
+    dataToSend = String(packet);
+}
+
+void AntaresLoRaWAN::setSleep(bool sleepSt) {
+    sleepStatus = sleepSt;
+    sleepInterval = 10;
+}
+
+void AntaresLoRaWAN::setSleep(bool sleepSt, unsigned int sleepInt) {
+    sleepStatus = sleepSt;
+    sleepInterval = sleepInt;
 }
 
 void AntaresLoRaWAN::startJob() {
