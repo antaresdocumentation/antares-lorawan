@@ -36,4 +36,8 @@ The class needs to be insantiated first before using the method. Please refer to
 * Install Arduino IDE
 * Download this library in .zip format and put it into your Arduino IDE's library catalog (**Sketch > Include Library > Add .ZIP Library...**)
 
-This library is an adaptation of [Arduino LMIC AS923](https://github.com/orenonline/arduino-lmic-as923)
+This library is an adaptation of [Arduino LMIC AS923](https://github.com/orenonline/arduino-lmic-as923).  
+
+<img src="https://upload.wikimedia.org/wikipedia/id/thumb/c/c4/Telkom_Indonesia_2013.svg/1200px-Telkom_Indonesia_2013.svg.png" width="200">  
+
+**Powered by Telkom Indonesia**  
