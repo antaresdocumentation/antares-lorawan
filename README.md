@@ -7,6 +7,7 @@ This is a library which consists of high-level API for connecting your LoRa devi
 This library works under the **Arduino** platform and has been tested on these boards:
 
 * ESP8266
+* ESP32
 
 and these LoRa modems:
 
@@ -29,7 +30,13 @@ The pin configuration can be changed with the following method of class `Antares
 ```
 setPins(int nssPin, int dio0Pin, int dio1Pin);
 ```
-The class needs to be insantiated first before using the method. Please refer to the example for the pin connections.
+The class needs to be insantiated first before using the method. Please refer to the example for the pin connections.  
+
+These pinmaps have been tested on these boards to be working:
+```
+ESP8266 : SCK=14(D5) MISO=12(D6) MOSI=13(D7) NSS=15(D8) DIO0=4(D1) DIO1=5(D2)
+ESP32   : SCK=18 MISO=19 MOSI=23 NSS=2 DIO0=22 DIO1=21
+```
 
 # Installation
 
