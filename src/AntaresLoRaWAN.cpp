@@ -3,7 +3,7 @@
 #include <lmic.h>
 #include <hal/hal.h>
 #include <SPI.h>
-#include <RH_RF95.h>
+// #include <RH_RF95.h>
 
 lmic_pinmap lmic_pins;
 
@@ -123,9 +123,9 @@ void AntaresLoRaWAN::setTxInterval(unsigned int intervalTime) {
 
 void AntaresLoRaWAN::setDataRateTxPow(dr_t dr, s1_t txpow) {
     LMIC_setDrTxpow(dr, txpow);
-    RH_RF95 rf95(_nssPin, _dio0Pin);
-
-    rf95.setTxPower(txpow, false); // Set power to 20 dBm, using PA_BOOST (false). Set to true for RFO pin.
+    // RH_RF95 rf95(_nssPin, _dio0Pin);
+    //
+    // rf95.setTxPower(txpow, false); // Set power to 20 dBm, using PA_BOOST (false). Set to true for RFO pin.
 }
 
 void AntaresLoRaWAN::init(String ACCESSKEY, String DEVICEID) {

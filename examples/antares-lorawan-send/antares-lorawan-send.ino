@@ -38,6 +38,14 @@ void setup() {
   antares.setPins(15, 4, 5);   // Set pins for NSS, DIO0, and DIO1
   antares.setTxInterval(5);    // Set the amount of interval time (in seconds) to transmit
 
+  // Set deep sleep mode to true or false. If set to true,
+  // The time to sleep (in seconds) must be given as a second parameter.
+  // Default sleep time is 10 seconds if not defined.
+  // **On ESP8266, connect RST pin to D0 (GPIO16)**
+  // **BE AWARE** Deep Sleep erases all the RAM data in ESP8266.
+  antares.setSleep(false);
+  // antares.setSleep(true, 10);
+
   antares.init(ACCESSKEY, DEVICEID);
 
   // Set data rate and uplink TX power
@@ -47,5 +55,5 @@ void setup() {
 }
 
 void loop() {
-  antares.runLoop();
+  antares.runLoop();  // Loop LoRaWAN sending program
 }

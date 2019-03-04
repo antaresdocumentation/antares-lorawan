@@ -5,7 +5,7 @@
 #include <lmic.h>
 #include <hal/hal.h>
 #include <SPI.h>
-#include <RH_RF95.h>
+// #include <RH_RF95.h>
 
 void do_send(osjob_t* j);
 
