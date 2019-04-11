@@ -174,6 +174,16 @@ enum { AS923_F1 = 923200000,      // g1   SF7-12
        AS923_J4 = 923000000,      // g2   SF7-12
        AS923_J5 = 922000000,      // g2   SF7-12
        AS923_J6 = 922100000,      // g2   SF7
+
+       //Custom ANTARES gateway frequencies
+       ANTARES_F1 = 920100000,
+       ANTARES_F2 = 920300000,
+       ANTARES_F3 = 920500000,
+       ANTARES_F4 = 920700000,
+       ANTARES_F5 = 920900000,
+       ANTARES_F6 = 921100000,
+       ANTARES_F7 = 921300000,
+       ANTARES_F8 = 921500000,
 };
 enum { AS923_FREQ_MIN = 921000000,
        AS923_FREQ_MAX = 924000000 };

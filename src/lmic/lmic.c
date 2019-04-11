@@ -952,12 +952,24 @@ static ostime_t nextJoinState (void) {
 //
 // BEG: AS923 related stuff
 //
+
 enum { NUM_DEFAULT_CHANNELS=3 };
-static CONST_TABLE(u4_t, iniChannelFreq)[6] = {
+
+// Default Frequency Channesls
+static CONST_TABLE(u4_t, iniChannelFreq)[11] = {
     // Join frequencies and duty cycle limit (0.1%)
-    AS923_F1|BAND_MILLI, AS923_F2|BAND_MILLI,AS923_F3|BAND_MILLI,
+    AS923_F1|BAND_MILLI, 
+    AS923_F2|BAND_MILLI,
+    AS923_F3|BAND_MILLI,
     // Default operational frequencies
-    AS923_F1|BAND_CENTI, AS923_F2|BAND_CENTI,AS923_F3|BAND_CENTI,
+    ANTARES_F1|BAND_CENTI,
+    ANTARES_F2|BAND_CENTI,
+    ANTARES_F3|BAND_CENTI,
+    ANTARES_F4|BAND_CENTI,
+    ANTARES_F5|BAND_CENTI,
+    ANTARES_F6|BAND_CENTI,
+    ANTARES_F7|BAND_CENTI,
+    ANTARES_F8|BAND_CENTI,
 };
 
 static void initDefaultChannels (bit_t join) {
@@ -965,23 +977,27 @@ static void initDefaultChannels (bit_t join) {
     os_clearMem(&LMIC.channelDrMap, sizeof(LMIC.channelDrMap));
     os_clearMem(&LMIC.bands, sizeof(LMIC.bands));
 
-    LMIC.channelMap = 0x07;
+    // LMIC.channelMap = 0x07;  // Original
+    LMIC.channelMap = 0xFF; // 8 Frequencies
+
     u1_t su = join ? 0 : 3;
-    for( u1_t fu=0; fu<3; fu++,su++ ) {
+    u1_t num = join ? 3 : 8;
+
+    for( u1_t fu=0; fu<num; fu++,su++ ) {
         LMIC.channelFreq[fu]  = TABLE_GET_U4(iniChannelFreq, su);
         LMIC.channelDrMap[fu] = DR_RANGE_MAP(DR_SF12,DR_SF7);
     }
 
     LMIC.bands[BAND_MILLI].txcap    = 1000;  // 0.1%
-    LMIC.bands[BAND_MILLI].txpow    = 27;
+    LMIC.bands[BAND_MILLI].txpow    = 20;
     LMIC.bands[BAND_MILLI].lastchnl = os_getRndU1() % MAX_CHANNELS;
     //printf("Last Chan in MILLI InitDefaultChannel : %1u \n", os_getRndU1() % MAX_CHANNELS );
     LMIC.bands[BAND_CENTI].txcap    = 100;   // 1%
-    LMIC.bands[BAND_CENTI].txpow    = 27;
+    LMIC.bands[BAND_CENTI].txpow    = 20;
     LMIC.bands[BAND_CENTI].lastchnl = os_getRndU1() % MAX_CHANNELS;
     //printf("Last Chan in CENTI InitDefaultChannel : %1u \n", os_getRndU1() % MAX_CHANNELS );
     LMIC.bands[BAND_DECI ].txcap    = 10;    // 10%
-    LMIC.bands[BAND_DECI ].txpow    = 27;
+    LMIC.bands[BAND_DECI ].txpow    = 20;
     LMIC.bands[BAND_DECI ].lastchnl = os_getRndU1() % MAX_CHANNELS;
     //printf("Last Chan in DECI InitDefaultChannel : %1u \n", os_getRndU1() % MAX_CHANNELS );
     LMIC.bands[BAND_MILLI].avail =
