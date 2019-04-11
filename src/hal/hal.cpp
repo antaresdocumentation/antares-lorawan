@@ -180,6 +180,15 @@ u1_t hal_checkTimer (u4_t time) {
 
 static uint8_t irqlevel = 0;
 
+#if defined (ARDUINO_ARCH_STM32F1) || defined (ARDUINO_ARCH_STM32)
+void hal_disableIRQs () {
+
+}
+
+void hal_enableIRQs () {
+  hal_io_check();
+}
+#else
 void hal_disableIRQs () {
     noInterrupts();
     irqlevel++;
@@ -200,6 +209,8 @@ void hal_enableIRQs () {
         hal_io_check();
     }
 }
+#endif
+
 
 void hal_sleep () {
     // Not implemented
