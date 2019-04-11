@@ -37,7 +37,7 @@ These pinmaps have been tested on these boards to be working:
 ```
 ESP8266 : SCK=14(D5) MISO=12(D6) MOSI=13(D7) NSS=15(D8) DIO0=4(D1) DIO1=5(D2)
 ESP32   : SCK=18 MISO=19 MOSI=23 NSS=2 DIO0=22 DIO1=21
-ESP32   : SCK=A5 MISO=A6 MOSI=A7 NSS=A4 DIO0=A3 DIO1=A0
+STM32   : SCK=A5 MISO=A6 MOSI=A7 NSS=A4 DIO0=A3 DIO1=A0
 ```
 
 # Installation
