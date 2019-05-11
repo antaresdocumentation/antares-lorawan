@@ -28,7 +28,7 @@ These are the pin connections which needs to be provided in order to make this l
 | DIO1  | (Custom GPIO Pin) |
 
 The pin configuration can be changed with the following method of class `AntaresLoRaWAN` :
-```
+```c
 AntaresLoRaWAN::setPins(int nssPin, int dio0Pin, int dio1Pin);
 ```
 The class needs to be insantiated first before using the method. Please refer to the example for the pin connections.  
