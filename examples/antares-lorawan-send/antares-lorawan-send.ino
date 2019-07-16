@@ -28,6 +28,8 @@ int counter = 0;
 void sendPacket() {
   String packet = "Hello world! " + String(counter);
   counter++;
+  // Put disableSend to true to not execute sending
+  // antares.disableSend(true);
   antares.send(packet);
 }
 

@@ -15,6 +15,9 @@ void sendPacket();
 static bool sleepStatus;
 static unsigned int sleepInterval;
 
+// Disable sending variable
+static bool disableSendStatus;
+
 static osjob_t sendjob;
 
 // Schedule TX every this many seconds (might become longer due to duty
@@ -36,6 +39,7 @@ public:
     void startJob();
     void runLoop();
     void init(String ACCESSKEY, String DEVICEID);
+    void disableSend(bool sendStatus);
 
     // Set sleep mode
     void setSleep(bool sleepSt);

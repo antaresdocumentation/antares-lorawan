@@ -8,25 +8,32 @@
 lmic_pinmap lmic_pins;
 
 void do_send(osjob_t* j){
-    // Check if there is not a current TX/RX job running
-    sendPacket();
-    String mydata = dataToSend;
-
-    char dataBuf[50];
-    int dataLen = mydata.length();
-
-    mydata.toCharArray(dataBuf, dataLen + 1);
-
-    Serial.println("\n[ANTARES] Data: " + mydata + "\n");
-
-    if (LMIC.opmode & OP_TXRXPEND) {
-        Serial.println(F("OP_TXRXPEND, not sending"));
-    } else {
-        // Prepare upstream data transmission at the next possible time.
-        LMIC_setTxData2(1, (uint8_t*)dataBuf, dataLen, 0);
-        Serial.println(F("Packet queued"));
+    // Check sending status
+    if(disableSendStatus) {
+      Serial.println("\n[ANTARES] Sending packet disabled!\n");
     }
-    // Next TX is scheduled after TX_COMPLETE event.
+    else {
+      // Check if there is not a current TX/RX job running
+      sendPacket();
+      String mydata = dataToSend;
+
+      char dataBuf[50];
+      int dataLen = mydata.length();
+
+      mydata.toCharArray(dataBuf, dataLen + 1);
+
+      Serial.println("\n[ANTARES] Data: " + mydata + "\n");
+
+      if (LMIC.opmode & OP_TXRXPEND) {
+          Serial.println(F("OP_TXRXPEND, not sending"));
+      } else {
+          // Prepare upstream data transmission at the next possible time.
+          LMIC_setTxData2(1, (uint8_t*)dataBuf, dataLen, 0);
+          Serial.println(F("Packet queued"));
+      }
+      // Next TX is scheduled after TX_COMPLETE event.
+    }
+    
 }
 
 void onEvent (ev_t ev) {
@@ -309,6 +316,10 @@ void AntaresLoRaWAN::setSleep(bool sleepSt) {
 void AntaresLoRaWAN::setSleep(bool sleepSt, unsigned int sleepInt) {
     sleepStatus = sleepSt;
     sleepInterval = sleepInt;
+}
+
+void AntaresLoRaWAN::disableSend(bool sendStatus) {
+    disableSendStatus = sendStatus;
 }
 
 void AntaresLoRaWAN::startJob() {
