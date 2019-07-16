@@ -16,7 +16,7 @@ static bool sleepStatus;
 static unsigned int sleepInterval;
 
 // Disable sending variable
-static bool disableSendStatus;
+static bool disableSendStatus = false;
 
 static osjob_t sendjob;
 
